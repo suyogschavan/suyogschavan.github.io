@@ -121,7 +121,8 @@ h1,
 h2,
 h3,
 h4 {
-  color: var(--title-color);
+  /* color: var(--title-color); */
+  color: #e3c923;
   font-weight: var(--font-semi-bold);
 }
 ul {
@@ -1158,6 +1159,7 @@ img {
 
   .home__title {
     font-size: 37px;
+    /* color: hsl(240, 69%, 50%); */
   }
 
   .home__social {
