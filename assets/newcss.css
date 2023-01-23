@@ -387,8 +387,8 @@ img {
 
 /*===================== About ==================*/
 .about__img {
-  width: 170px;
-  border-radius: 500%;
+  /* width: 170px; */
+  border-radius: 20%;
   justify-self: center;
   align-self: center;
   /* border: 1px solid #fff; */
