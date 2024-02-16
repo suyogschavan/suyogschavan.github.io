@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Saver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .link-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .link-item {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .link-item:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Link Saver</h1>
+    <form id="link-form">
+        <label for="link-text">Link Text:</label>
+        <input type="text" id="link-text" required>
+        <br>
+        <label for="link-url">Link URL:</label>
+        <input type="url" id="link-url" required>
+        <br>
+        <button type="submit">Save Link</button>
+    </form>
+    <div class="link-container" id="link-container"></div>
+    <script>
+        const linkForm = document.getElementById('link-form');
+        const linkText = document.getElementById('link-text');
+        const linkUrl = document.getElementById('link-url');
+        const linkContainer = document.getElementById('link-container');
+
+        function saveLink(text, url) {
+            if (localStorage.getItem('links')) {
+                const links = JSON.parse(localStorage.getItem('links'));
+                links.push({ text, url });
+                localStorage.setItem('links', JSON.stringify(links));
+            } else {
+                const links = [{ text, url }];
+                localStorage.setItem('links', JSON.stringify(links));
+            }
+        }
+
+        function displayLinks() {
+            const links = JSON.parse(localStorage.getItem('links'));
+            linkContainer.innerHTML = '';
+            links.forEach(link => {
+                const linkItem = document.createElement('div');
+                linkItem.classList.add('link-item');
+                linkItem.textContent = link.text;
+                linkItem.onclick = () => {
+                    window.open(link.url, '_blank');
+                };
+                linkContainer.appendChild(linkItem);
+            });
+        }
+
+        function readLinksFromFile(file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const lines = e.target.result.split('\n');
+                lines.forEach(line => {
+                    const [text, url] = line.split(',');
+                    saveLink(text, url);
+                });
+                displayLinks();
+            };
+            reader.readAsText(file);
+        }
+
+        linkForm.addEventListener('submit', e => {
+            e.preventDefault();
+            saveLink(linkText.value, linkUrl.value);
+            linkText.value = '';
+            linkUrl.value = '';
+            displayLinks();
+        });
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.txt';
+        fileInput.onchange = e => {
+            readLinksFromFile(e.target.files[0]);
+        };
+
+        const fileButton = document.createElement('button');
+        fileButton.textContent = 'Load Links from File';
+        fileButton.onclick = () => {
+            fileInput.click();
+        };
+
+        document.body.appendChild(fileButton);
+        document.body.appendChild(fileInput);
+
+        displayLinks();
+    </script>
+</body>
+</html>
